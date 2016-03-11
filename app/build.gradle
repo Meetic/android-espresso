@@ -1,0 +1,124 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.meetic.espresso_template"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
+        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.android.support:multidex:1.0.0'
+
+    androidTestCompile(
+            'com.android.support:support-annotations:23.1.1',
+
+            'com.android.support:multidex:1.0.0',
+
+            // Cucumber JVM
+            'info.cukes:cucumber-jvm-deps:1.0.3',
+
+            // Screenshot
+            'com.squareup.spoon:spoon-client:1.2.0',
+            'com.jraska:falcon-spoon-compat:0.3.1'
+    )
+
+    androidTestCompile('com.android.support.test:runner:0.4') {
+        exclude module: 'support-annotations'
+    }
+
+    androidTestCompile('com.android.support.test:rules:0.4') {
+        exclude module: 'support-annotations'
+    }
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.1') {
+        exclude module: 'support-annotations'
+    }
+
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.1') {
+        exclude module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+
+    androidTestCompile('info.cukes:cucumber-android:1.2.4') {
+        exclude module: 'cucumber-jvm-deps'
+    }
+
+    androidTestCompile('info.cukes:cucumber-picocontainer:1.2.4') {
+        exclude module: 'cucumber-jvm-deps'
+    }
+}
+
+buildscript {
+    ext.kotlin_version = '1.0.0'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Retrieve report from terminal
+// Replace stylesheet with a better one
+gradle.taskGraph.afterTask { task, TaskState state ->
+    if (task == connectedAndroidTest) {
+        def reportDir = new File(project.buildDir, "cucumber-reports")
+        if (!reportDir.exists()) {
+            reportDir.mkdirs()
+        }
+        println "Retrieving Cucumber test report to ${project.buildDir}"
+
+        def retrieveReportProcess = new ProcessBuilder(
+            ['adb', 'pull', "/mnt/sdcard/fr.blacroix.android.espresso_cucumber.test/cucumber-reports/report-html", reportDir.getAbsolutePath()]
+        )
+
+        def process = retrieveReportProcess.start()
+        process.waitFor()
+
+        def destPath = "${reportDir.getAbsolutePath()}/style.css"
+
+        def sourcePath = "${project.projectDir}/../assets/style.css"
+        println "Replacing $destPath with $sourcePath"
+        retrieveReportProcess = new ProcessBuilder(
+            'cp', sourcePath, destPath
+        )
+
+        process = retrieveReportProcess.start()
+        process.waitFor()
+    }
+}
+

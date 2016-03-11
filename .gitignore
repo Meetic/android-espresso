@@ -1,0 +1,8 @@
+.irb-history
+*.iml
+local.properties
+screenshot*
+.gradle/**
+.idea/**
+build/**
+test_servers/**
