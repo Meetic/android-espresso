@@ -13,6 +13,11 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+
+        // To avoid <No CucumberOptions annotation> testing applicationId must differ from applicationId
+        testApplicationId 'com.meetic.espresso_template.test'
+        testInstrumentationRunner 'com.meetic.espresso_template.test.runner.CucumberTestRunner'
+
     }
     buildTypes {
         release {
@@ -29,6 +34,8 @@ android {
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
+
+
 }
 
 dependencies {
@@ -104,19 +111,19 @@ gradle.taskGraph.afterTask { task, TaskState state ->
         println "Retrieving Cucumber test report to ${project.buildDir}"
 
         def retrieveReportProcess = new ProcessBuilder(
-            ['adb', 'pull', "/mnt/sdcard/fr.blacroix.android.espresso_cucumber.test/cucumber-reports/report-html", reportDir.getAbsolutePath()]
+            ['adb', 'pull', "/mnt/sdcard/com.meetic.espresso_template.test/cucumber-reports/report-html", reportDir.getAbsolutePath()]
         )
 
         def process = retrieveReportProcess.start()
         process.waitFor()
 
-        def destPath = "${reportDir.getAbsolutePath()}/style.css"
-
-        def sourcePath = "${project.projectDir}/../assets/style.css"
-        println "Replacing $destPath with $sourcePath"
-        retrieveReportProcess = new ProcessBuilder(
-            'cp', sourcePath, destPath
-        )
+//        def destPath = "${reportDir.getAbsolutePath()}/style.css"
+//
+//        def sourcePath = "${project.projectDir}/../assets/style.css"
+//        println "Replacing $destPath with $sourcePath"
+//        retrieveReportProcess = new ProcessBuilder(
+//            'cp', sourcePath, destPath
+//        )
 
         process = retrieveReportProcess.start()
         process.waitFor()

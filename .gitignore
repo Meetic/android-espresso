@@ -1,7 +1,7 @@
 .irb-history
 *.iml
 local.properties
-screenshot*
+screenshot*.png
 .gradle/**
 .idea/**
 build/**
