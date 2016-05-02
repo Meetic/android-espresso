@@ -30,7 +30,7 @@ import org.junit.internal.matchers.TypeSafeMatcher
  */
 class StepsDefinitions : ActivityInstrumentationTestCase2<LoginActivity>(LoginActivity::class.java) {
 
-    @Before
+    @Before("@login")
     @Throws(Exception::class)
     public override fun setUp() {
         super.setUp()
@@ -41,7 +41,7 @@ class StepsDefinitions : ActivityInstrumentationTestCase2<LoginActivity>(LoginAc
         Intents.init()
     }
 
-    @After
+    @After("@login")
     @Throws(Exception::class)
     public override fun tearDown() {
         Intents.release()
