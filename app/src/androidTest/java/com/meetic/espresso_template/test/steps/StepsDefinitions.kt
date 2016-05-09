@@ -10,6 +10,7 @@ import android.support.test.espresso.matcher.ViewMatchers
 import android.test.ActivityInstrumentationTestCase2
 import android.view.View
 import android.widget.EditText
+import com.meetic.espresso_template.DetailActivity
 import com.meetic.espresso_template.ListActivity
 import com.meetic.espresso_template.LoginActivity
 import com.meetic.espresso_template.R
@@ -76,6 +77,9 @@ class StepsDefinitions : ActivityInstrumentationTestCase2<LoginActivity>(LoginAc
             }
             "Logged screen" -> {
                 Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
+            }
+            "item 42 detail screen" -> {
+                Intents.intended(IntentMatchers.hasComponent(DetailActivity::class.java.name))
             }
         }
     }

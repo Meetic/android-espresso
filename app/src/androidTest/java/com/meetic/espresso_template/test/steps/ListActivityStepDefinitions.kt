@@ -8,6 +8,7 @@ import android.support.test.espresso.intent.Intents
 import android.support.test.espresso.intent.matcher.IntentMatchers
 import android.support.test.espresso.matcher.ViewMatchers
 import android.test.ActivityInstrumentationTestCase2
+import com.meetic.espresso_template.DetailActivity
 import com.meetic.espresso_template.ListActivity
 import com.meetic.espresso_template.LoginActivity
 import com.meetic.espresso_template.R
@@ -18,6 +19,7 @@ import cucumber.api.java.en.And
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
+import org.hamcrest.Matchers
 
 /**
  * Created by g.tan on 02/05/2016.
@@ -53,24 +55,14 @@ class ListActivityStepDefinitions : ActivityInstrumentationTestCase2<LoginActivi
 
     @When("^I scroll down to item 42")
     fun I_scroll_down_to_item_42() {
-
-        Espresso.onData(ViewMatchers.withId(R.id.text))
-                .check(ViewAssertions.matches(ViewMatchers.withText("item 42")))
+        Espresso.onData(Matchers.anything())
+                .inAdapterView(Matchers.allOf(ViewMatchers.withId(R.id.listView)))
+                .atPosition(41)
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-//        Espresso.onData(Matchers.hasEntry(Matchers.equalTo(""))).
-//        val action = ViewActions.scrollTo()
-//        Espresso.onView(ViewMatchers.withId(R.id.listView)).perform(action)
     }
 
     @And("^I press item 42")
     fun I_press_item_42() {
-//        val action = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(42, ViewActions.click())
-//        Espresso.onView(ViewMatchers.withId(R.id.listView)).perform(action)
-    }
-
-    @Then("^I see item 42 detail screen")
-    fun I_see_item_42_detail_screen() {
-
+        Espresso.onView(ViewMatchers.withText("element 42")).perform(ViewActions.click())
     }
 }
